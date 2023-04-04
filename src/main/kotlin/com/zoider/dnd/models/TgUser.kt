@@ -4,15 +4,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-data class Item(
+data class TgUser (
     val name: String,
-    val cost: Int? = null,
-    val size: ItemSize,
-    @Id var id: String? = null
+    val telegramId: String,
+    @Id val id: String? = null
 )
-
-enum class ItemSize {
-    SMALL,
-    MEDIUM,
-    BIG
-}

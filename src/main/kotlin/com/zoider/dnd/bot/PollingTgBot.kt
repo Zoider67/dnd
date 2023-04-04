@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
+import org.telegram.telegrambots.meta.api.objects.User
 
 @Component
 class PollingTgBot(token: String) : TelegramLongPollingBot(token) {
@@ -21,7 +22,7 @@ class PollingTgBot(token: String) : TelegramLongPollingBot(token) {
             val message = SendMessage()
             message.setChatId(update.message.chatId)
             message.text = update.message.text
-
+            val user: User
             execute(message)
         }
     }
