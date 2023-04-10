@@ -16,7 +16,6 @@ class TgUserRepositoryTest @Autowired constructor(private val tgUserRepository: 
     @Test
     fun `create read update delete operations`() {
         val tgUser = TgUser(
-            name = "vasya",
             telegramId = "123456"
         )
 
@@ -25,7 +24,6 @@ class TgUserRepositoryTest @Autowired constructor(private val tgUserRepository: 
 
         assertNotNull(tgUserDb)
 
-        assertEquals(tgUser.name, tgUserDb?.name)
         assertEquals(tgUser.telegramId, tgUserDb?.telegramId)
 
         tgUserRepository.deleteTgUserById(userId)

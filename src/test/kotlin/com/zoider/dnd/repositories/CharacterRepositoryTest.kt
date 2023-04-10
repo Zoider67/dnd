@@ -22,7 +22,6 @@ class CharacterRepositoryTest @Autowired constructor(
     fun `create read update delete operations`() {
         val user = tgUserRepository.saveTgUser(
             TgUser(
-                name = "vasya",
                 telegramId = "123456"
             )
         )
@@ -32,13 +31,13 @@ class CharacterRepositoryTest @Autowired constructor(
         val character1 = Character(
             tgUser = user,
             name = "vasya's first character",
-            level = 1
+            charClass = "rogue"
         )
 
         val character2 = Character(
             tgUser = user,
             name = "vasya's second character",
-            level = 2
+            charClass = "wizard"
         )
 
         val charDb1 = characterRepository.saveCharacter(character1)
@@ -47,11 +46,11 @@ class CharacterRepositoryTest @Autowired constructor(
         val characters = characterRepository.getCharactersByTelegramId(user.telegramId)
         assertTrue(characters?.size == 2)
 
-        characterRepository.setCurrentCharacterForUser(telegramId = user.telegramId, charDb1)
+        characterRepository.setCurrentCharacterForUser(telegramId = user.telegramId, charDb1.id!!)
 
         assertEquals(character1.name, characterRepository.getCurrentCharacterOfUser(user.telegramId)?.name)
 
-        characterRepository.setCurrentCharacterForUser(telegramId = user.telegramId, charDb2)
+        characterRepository.setCurrentCharacterForUser(telegramId = user.telegramId, charDb2.id!!)
 
         assertEquals(character2.name, characterRepository.getCurrentCharacterOfUser(user.telegramId)?.name)
     }

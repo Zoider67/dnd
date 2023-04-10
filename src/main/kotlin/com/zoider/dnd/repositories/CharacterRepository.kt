@@ -28,10 +28,10 @@ class CharacterRepository(private val mongoTemplate: MongoTemplate) {
     fun getCurrentCharacterOfUser(telegramId: String): Character? =
         mongoTemplate.findOne(Query.query(Criteria.where("telegramId").`is`(telegramId)), TgUser::class.java)?.currentCharacter
 
-    fun setCurrentCharacterForUser(telegramId: String, character: Character) =
+    fun setCurrentCharacterForUser(telegramId: String, characterId: String) =
         mongoTemplate.updateFirst(
             Query.query(Criteria.where("telegramId").`is`(telegramId)),
-            Update().set("currentCharacter", character),
+            Update().set("currentCharacter", ObjectId(characterId)),
             TgUser::class.java
         )
 

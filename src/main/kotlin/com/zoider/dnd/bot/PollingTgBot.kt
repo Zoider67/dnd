@@ -1,16 +1,19 @@
 package com.zoider.dnd.bot
 
+import jakarta.annotation.PostConstruct
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
+import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.User
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 
 @Component
-class PollingTgBot(token: String) : TelegramLongPollingBot(token) {
+class PollingTgBot(@Value("\${telegram.token}") token: String) : TelegramLongPollingBot(token) {
 
     companion object {
-        const val TG_TOKEN = "5560411660:AAFUApsI-0oBEnCzKOJzGU1YO4z6qkzDqiM"
         const val TG_BOT_NAME = "rpg_bot_rc"
     }
     override fun getBotUsername(): String {
