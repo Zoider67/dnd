@@ -5,9 +5,9 @@ import com.zoider.dnd.models.TgUser
 
 interface CharacterService {
 
-    fun createCharacter(character: Character): Character
+    fun createCharacter(character: Character,): Character
 
-    fun getCharacterList(userId: String): List<Character>
+    fun getCharacterList(userTgId: String): List<Character>
 
-    fun setCurrentCharacter(characterId: String): Character
+    fun setCurrentCharacter(userTgId: String ,characterId: String): Character
 }

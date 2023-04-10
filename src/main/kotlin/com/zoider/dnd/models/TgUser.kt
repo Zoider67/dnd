@@ -9,6 +9,6 @@ data class TgUser(
     @Id val id: String? = null,
     val name: String,
     val telegramId: String,
-    @DocumentReference(lazy = true)
+    @DocumentReference(lazy = true /*, lookup = "{ 'telegramId' : ?#{#self._id} }" */)
     val currentCharacter: Character? = null,
 )

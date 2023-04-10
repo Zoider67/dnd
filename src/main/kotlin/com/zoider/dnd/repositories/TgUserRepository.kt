@@ -20,4 +20,7 @@ class TgUserRepository(private val mongoTemplate: MongoTemplate) {
         mongoTemplate.findAndRemove(
             Query.query(Criteria.where("id").`is`(tgUserId)), TgUser::class.java
         )
+
+    fun getTgUserByTelegramId(telegramId: String): TgUser? =
+        mongoTemplate.findOne(Query.query(Criteria.where("telegramId").`is`(telegramId)), TgUser::class.java)
 }
