@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.0.4")
     implementation("org.springframework.boot:spring-boot-starter-web:3.0.4")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -27,7 +28,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools:3.0.4")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.4")
-    implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2")
 }
 
 allOpen {
