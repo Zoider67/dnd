@@ -11,5 +11,6 @@ data class Character(
     @DocumentReference(lazy = true, lookup = "{ 'telegramId' : ?#{#self.tgId} }")
     val tgUser: TgUser,
     val name: String,
-    val charClass: String
+    val charClass: String,
+    val race: String
 )

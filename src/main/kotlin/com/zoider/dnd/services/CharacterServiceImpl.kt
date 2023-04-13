@@ -22,7 +22,8 @@ class CharacterServiceImpl(
             Character(
                 tgUser = user,
                 name = characterDto.name,
-                charClass = characterDto.charClass
+                charClass = characterDto.charClass,
+                race = characterDto.race
             )
         )
     }

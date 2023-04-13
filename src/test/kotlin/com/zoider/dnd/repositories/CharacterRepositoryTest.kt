@@ -31,13 +31,15 @@ class CharacterRepositoryTest @Autowired constructor(
         val character1 = Character(
             tgUser = user,
             name = "vasya's first character",
-            charClass = "rogue"
+            charClass = "rogue",
+            race = "human"
         )
 
         val character2 = Character(
             tgUser = user,
             name = "vasya's second character",
-            charClass = "wizard"
+            charClass = "wizard",
+            race = "elf"
         )
 
         val charDb1 = characterRepository.saveCharacter(character1)
