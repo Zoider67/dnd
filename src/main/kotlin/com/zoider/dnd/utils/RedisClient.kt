@@ -13,21 +13,17 @@ class RedisClient(
     @Value("\${redis.port}")
     private val port: String
 ) {
-    private lateinit var pool: JedisPool
-
-    init {
-        pool = JedisPool(host, port.toInt())
-    }
+    private var pool: JedisPool = JedisPool(host, port.toInt())
+    private var jedis: Jedis = pool.resource
 
     fun set(key: String, value: String, ttl: Long) {
-        val jedis = pool.resource
+        println("set value $value for key $key")
         jedis.set(key, value, SetParams.setParams().ex(ttl))
     }
 
     fun get(key: String): String? {
-        val jedis = pool.resource
         val res = jedis.get(key)
-        return if (res == "nil") {
+        return if (res == "nil" || res == "na") {
             null
         } else {
             res
@@ -35,7 +31,6 @@ class RedisClient(
     }
 
     fun delete(key: String) {
-        val jedis = pool.resource
         jedis.del(key)
     }
 }

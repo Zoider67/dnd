@@ -3,11 +3,8 @@ package com.zoider.dnd.repositories
 import com.zoider.dnd.dto.ConversationStateDto
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.context.junit4.SpringRunner
 
 //TODO: automatically run redis container for unit test
 
@@ -38,7 +35,7 @@ class ConversationRepositoryTest @Autowired constructor(
 
         val savedConversationStateDto1 = conversationRepository.getConversationState(
             chatId = testChatId,
-            tgUserId = testUserId
+            telegramId = testUserId
         )
 
         assertEquals(
@@ -56,7 +53,7 @@ class ConversationRepositoryTest @Autowired constructor(
 
         val savedConversationStateDto2 = conversationRepository.getConversationState(
             chatId = testChatId,
-            tgUserId = testUserId
+            telegramId = testUserId
         )
 
         assertEquals(
@@ -67,7 +64,7 @@ class ConversationRepositoryTest @Autowired constructor(
         assertNull(
             conversationRepository.getConversationState(
                 chatId = testChatId,
-                tgUserId = "anotheruser"
+                telegramId = "anotheruser"
             )
         )
 
@@ -79,7 +76,7 @@ class ConversationRepositoryTest @Autowired constructor(
         assertNull(
             conversationRepository.getConversationState(
                 chatId = testChatId,
-                tgUserId = testUserId
+                telegramId = testUserId
             )
         )
     }

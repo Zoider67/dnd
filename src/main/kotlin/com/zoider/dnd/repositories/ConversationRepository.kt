@@ -9,6 +9,7 @@ class ConversationRepository(private val redisClient: RedisClient) {
 
     companion object {
         const val DEFAULT_TTL: Long = 86400 //1 day in seconds
+        const val SPLITTER = ":"
     }
 
     fun saveConversationState(
@@ -16,16 +17,16 @@ class ConversationRepository(private val redisClient: RedisClient) {
         tgUserId: String,
         conversationStateDto: ConversationStateDto
     ) = redisClient.set(
-        key = "${chatId}_${tgUserId}",
+        key = "${chatId}${SPLITTER}${tgUserId}",
         value = conversationStateDto.toString(),
         DEFAULT_TTL
     )
 
     fun getConversationState(
         chatId: String,
-        tgUserId: String
+        telegramId: String
     ): ConversationStateDto? {
-        val data = redisClient.get(key = "${chatId}_${tgUserId}")?.split("_") ?: return null
+        val data = redisClient.get(key = "${chatId}${SPLITTER}${telegramId}")?.split(SPLITTER) ?: return null
         return ConversationStateDto(
             data[0],
             data[1]
@@ -35,5 +36,5 @@ class ConversationRepository(private val redisClient: RedisClient) {
     fun clearConversationState(
         chatId: String,
         tgUserId: String
-    ) = redisClient.delete("${chatId}_${tgUserId}")
+    ) = redisClient.delete("${chatId}${SPLITTER}${tgUserId}")
 }

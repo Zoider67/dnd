@@ -10,6 +10,7 @@ data class Character(
     @Id val id: String? = null,
     @DocumentReference(lazy = true, lookup = "{ 'telegramId' : ?#{#self.tgId} }")
     val tgUser: TgUser,
+    val isCreated: Boolean = true,
     val name: String,
     val charClass: String,
     val race: String

@@ -1,23 +1,25 @@
 package com.zoider.dnd.bot
 
 import com.zoider.dnd.bot.handlers.base.ICommandHandler
+import com.zoider.dnd.bot.handlers.base.IConversationHandler
 import com.zoider.dnd.bot.handlers.base.IHandler
 import com.zoider.dnd.bot.handlers.base.ITextHandler
+import com.zoider.dnd.repositories.ConversationRepository
+import com.zoider.dnd.utils.SendMessageFactory
+import com.zoider.dnd.utils.exceptions.MissingHandlerException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands
-import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands.SetMyCommandsBuilder
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
-import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
 
 @Component
 class PollingTgBot(
     @Value("\${telegram.token}")
     token: String,
-    private val handlers: List<IHandler>
+    private val handlers: List<IHandler>,
+    private val conversationRepository: ConversationRepository
 ) : TelegramLongPollingBot(token) {
 
     companion object {
@@ -30,7 +32,7 @@ class PollingTgBot(
 
     override fun onRegister() {
         super.onRegister()
-        println("Register commands: \n${handlers.joinToString { it.getFilter().plus("\n") }}")
+        println("Register commands: \n${handlers.joinToString { it.getFilter() + "\n" }}")
         val commands = SetMyCommands
             .builder()
             .commands(handlers
@@ -42,16 +44,63 @@ class PollingTgBot(
 
     override fun onUpdateReceived(update: Update?) {
         if (update?.hasMessage() == true) {
-            var handler: IHandler? = null
-            if (update.message.isCommand) {
-                handler = handlers.filterIsInstance<ICommandHandler>().find { it.getFilter() == update.message.text }
-            } else if (update.message.hasText()) {
-                handler = handlers.filterIsInstance<ITextHandler>().find { it.getFilter() == update.message.text }
-            } else {
-                //TODO
-                println("no handlers for that kind of messages")
+            try {
+                processHandlers(update)
+            } catch (e: MissingHandlerException) {
+                val msg = SendMessageFactory.textToChat(update.message.chatId, "no handler")
+                executeAsync(msg)
             }
-            handler?.execute(this, update)
         }
+    }
+
+    private fun processHandlers(update: Update) {
+        if (!processCommandHandlers(update)
+            && !processConversationHandlers(update)
+            && !processTextHandlers(update)
+        ) {
+            throw MissingHandlerException()
+        }
+    }
+
+    private fun processCommandHandlers(update: Update): Boolean {
+        println("process command handlers")
+        if (!update.message.isCommand) {
+            return false
+        }
+        val handler = handlers.filterIsInstance<ICommandHandler>()
+            .find { it.getFilter() == update.message.text } ?: return false
+
+        conversationRepository.clearConversationState(
+            update.message.chatId.toString(),
+            update.message.from.id.toString()
+        )
+        handler.execute(this, update)
+        return true
+    }
+
+    private fun processConversationHandlers(update: Update): Boolean {
+        println("process conversations handlers")
+        val conversationState = conversationRepository
+            .getConversationState(
+                chatId = update.message.chatId.toString(),
+                telegramId = update.message.from.id.toString()
+            ) ?: return false
+        println("find conversations state: $conversationState")
+        val handler = handlers.filterIsInstance<IConversationHandler>()
+            .find { it.getConversationId() == conversationState.conversationId } ?: return false
+        handler.execute(bot = this, update = update, state = conversationState.state)
+        return true
+    }
+
+    private fun processTextHandlers(update: Update): Boolean {
+        println("process text handlers")
+        if (!update.message.hasText()) {
+            return false
+        }
+
+        val handler = handlers.filterIsInstance<ITextHandler>()
+            .find { it.getFilter() == update.message.text } ?: return false
+        handler.execute(this, update)
+        return true
     }
 }
