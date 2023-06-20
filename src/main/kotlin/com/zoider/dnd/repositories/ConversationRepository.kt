@@ -26,11 +26,8 @@ class ConversationRepository(private val redisClient: RedisClient) {
         chatId: String,
         telegramId: String
     ): ConversationStateDto? {
-        val data = redisClient.get(key = "${chatId}${SPLITTER}${telegramId}")?.split(SPLITTER) ?: return null
-        return ConversationStateDto(
-            data[0],
-            data[1]
-        )
+        val data = redisClient.get(key = "${chatId}${SPLITTER}${telegramId}") ?: return null
+        return ConversationStateDto.fromRedisString(data)
     }
 
     fun clearConversationState(

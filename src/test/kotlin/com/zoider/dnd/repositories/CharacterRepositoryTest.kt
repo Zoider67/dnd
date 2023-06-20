@@ -45,7 +45,7 @@ class CharacterRepositoryTest @Autowired constructor(
         val charDb1 = characterRepository.saveCharacter(character1)
         val charDb2 = characterRepository.saveCharacter(character2)
 
-        val characters = characterRepository.getCharactersByTelegramId(user.telegramId)
+        val characters = characterRepository.getCharactersByUserTgId(user.telegramId)
         assertTrue(characters?.size == 2)
 
         characterRepository.setCurrentCharacterForUser(telegramId = user.telegramId, charDb1.id!!)

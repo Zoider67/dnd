@@ -14,7 +14,7 @@ class CharacterServiceImpl(
 ) : CharacterService {
 
     override fun createCharacter(userTgId: String, characterDto: CharacterDto): Character {
-        val user = tgUserRepository.getTgUserById(userTgId)
+        val user = tgUserRepository.getTgUserByTelegramId(userTgId)
             ?: throw CommonDndBotException("Ошибка создания персонажа: пользователь не зарегистрирован")
         return characterRepository.saveCharacter(
             Character(
@@ -27,7 +27,7 @@ class CharacterServiceImpl(
     }
 
     override fun getCharacterList(userTgId: String): List<Character>? {
-        return characterRepository.getCharactersByTelegramId(userTgId)
+        return characterRepository.getCharactersByUserTgId(userTgId)
     }
 
     override fun setCurrentCharacter(userTgId: String, characterId: String): Boolean {

@@ -11,10 +11,10 @@ class EditCharacterServiceImpl(
     private val tgUserRepository: TgUserRepository,
     private val characterRepository: CharacterRepository
 ) : EditCharacterService {
-    override fun startCreating(userTgId: String) {
-        val user = tgUserRepository.getTgUserById(userTgId)
+    override fun startCreating(userTgId: String) : String? {
+        val user = tgUserRepository.getTgUserByTelegramId(userTgId)
             ?: throw CommonDndBotException("Ошибка создания персонажа: пользователь не зарегистрирован")
-        characterRepository.saveCharacter(
+        return characterRepository.saveCharacter(
             Character(
                 tgUser = user,
                 isCreated = false,
@@ -22,18 +22,21 @@ class EditCharacterServiceImpl(
                 charClass = "",
                 race = ""
             )
-        )
+        ).id
     }
 
     override fun getNotCreatedCharacter(userTgId: String): Character? {
         return characterRepository.getNotCreatedCharacter(userTgId)
     }
 
-    override fun stopCreating(charId: String) =
-        characterRepository.setIsCharacterCreatedState(
-            characterId = charId,
-            isCreated = false
-        )
+    override fun stopCreating(charId: String): Character? {
+        return if(characterRepository.setIsCharacterCreatedState(
+                characterId = charId,
+                isCreated = false
+            )) {
+            characterRepository.getCharacterById(charId)
+        } else null
+    }
 
     override fun setName(charId: String, name: String) =
         characterRepository.updateCharacterName(

@@ -7,16 +7,29 @@ import org.telegram.telegrambots.meta.api.objects.Update
 abstract class BaseConversationHandler(
     protected val conversationRepository: ConversationRepository
 ) : IConversationHandler {
-    fun getConversationRepository(): ConversationRepository = conversationRepository
 
-    fun setConversationState(update: Update, state: IConversationHandler.State) {
-        this.getConversationRepository().saveConversationState(
+    fun setConversationState(
+        update: Update,
+        state: IConversationHandler.State,
+        attributes: Map<String, String>? = null
+    ) {
+        conversationRepository.saveConversationState(
             update.message.chatId.toString(),
             update.message.from.id.toString(),
             conversationStateDto = ConversationStateDto(
                 conversationId = this.getConversationId(),
-                state = state.toString()
+                state = state.toString(),
+                convContextAttributes = attributes
             )
+        )
+    }
+
+    fun clearConversationState(
+        update: Update
+    ) {
+        conversationRepository.clearConversationState(
+            chatId = update.message.chatId.toString(),
+            tgUserId = update.message.from.id.toString()
         )
     }
 }

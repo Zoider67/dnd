@@ -20,14 +20,14 @@ class TgUserRepositoryTest @Autowired constructor(private val tgUserRepository: 
         )
 
         val userId = tgUserRepository.saveTgUser(tgUser).id.toString()
-        val tgUserDb = tgUserRepository.getTgUserById(userId)
+        val tgUserDb = tgUserRepository.getTgUserByTelegramId(tgUser.telegramId)
 
         assertNotNull(tgUserDb)
 
         assertEquals(tgUser.telegramId, tgUserDb?.telegramId)
 
         tgUserRepository.deleteTgUserById(userId)
-        val tgUserDbNull = tgUserRepository.getTgUserById(userId)
+        val tgUserDbNull = tgUserRepository.getTgUserByTelegramId(userId)
 
         assertNull(tgUserDbNull)
     }

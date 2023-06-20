@@ -63,7 +63,6 @@ class PollingTgBot(
     }
 
     private fun processCommandHandlers(update: Update): Boolean {
-        println("process command handlers")
         if (!update.message.isCommand) {
             return false
         }
@@ -79,21 +78,18 @@ class PollingTgBot(
     }
 
     private fun processConversationHandlers(update: Update): Boolean {
-        println("process conversations handlers")
         val conversationState = conversationRepository
             .getConversationState(
                 chatId = update.message.chatId.toString(),
                 telegramId = update.message.from.id.toString()
             ) ?: return false
-        println("find conversations state: $conversationState")
         val handler = handlers.filterIsInstance<IConversationHandler>()
             .find { it.getConversationId() == conversationState.conversationId } ?: return false
-        handler.execute(bot = this, update = update, state = conversationState.state)
+        handler.execute(bot = this, update = update, state = conversationState)
         return true
     }
 
     private fun processTextHandlers(update: Update): Boolean {
-        println("process text handlers")
         if (!update.message.hasText()) {
             return false
         }

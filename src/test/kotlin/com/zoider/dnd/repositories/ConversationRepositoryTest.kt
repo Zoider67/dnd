@@ -43,7 +43,11 @@ class ConversationRepositoryTest @Autowired constructor(
             savedConversationStateDto1.toString()
         )
 
-        val conversationStateDto2 = ConversationStateDto(testConvId2, testState2)
+        val conversationStateDto2 = ConversationStateDto(
+            conversationId = testConvId2,
+            state = testState2,
+            convContextAttributes = mapOf(Pair("test1", "data1"), Pair("test2", "data2"))
+        )
 
         conversationRepository.saveConversationState(
             chatId = testChatId,
@@ -60,6 +64,8 @@ class ConversationRepositoryTest @Autowired constructor(
             conversationStateDto2.toString(),
             savedConversationStateDto2.toString()
         )
+
+        assertNotNull(conversationStateDto2.convContextAttributes)
 
         assertNull(
             conversationRepository.getConversationState(

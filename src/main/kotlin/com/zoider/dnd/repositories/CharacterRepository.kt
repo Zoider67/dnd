@@ -19,7 +19,7 @@ class CharacterRepository(private val mongoTemplate: MongoTemplate) {
     fun getCharacterById(characterId: String): Character? =
         mongoTemplate.findById(characterId, Character::class.java)
 
-    fun getCharactersByTelegramId(telegramId: String): List<Character>? =
+    fun getCharactersByUserTgId(telegramId: String): List<Character>? =
         mongoTemplate.find(Query.query(Criteria.where("tgUser.tgId").`is`(telegramId)), Character::class.java)
 
     fun getCurrentCharacterOfUser(telegramId: String): Character? =
@@ -70,10 +70,10 @@ class CharacterRepository(private val mongoTemplate: MongoTemplate) {
             Character::class.java
         ).wasAcknowledged()
 
-    fun getNotCreatedCharacter(tgUserId: String): Character? =
+    fun getNotCreatedCharacter(telegramId: String): Character? =
         mongoTemplate.findOne(
             Query.query(
-                Criteria.where("tgUser.tgId").`is`(tgUserId)
+                Criteria.where("tgUser.tgId").`is`(telegramId)
             ).addCriteria(
                 Criteria.where("isCreated").`is`(false)
             ),
