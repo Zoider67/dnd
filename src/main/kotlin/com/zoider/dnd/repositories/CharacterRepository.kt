@@ -22,6 +22,9 @@ class CharacterRepository(private val mongoTemplate: MongoTemplate) {
     fun getCharactersByUserTgId(telegramId: String): List<Character>? =
         mongoTemplate.find(Query.query(Criteria.where("tgUser.tgId").`is`(telegramId)), Character::class.java)
 
+    fun getCharacterByName(characterName: String): Character? =
+        mongoTemplate.find(Query.query(Criteria.where("name").`is`(characterName)), Character::class.java).first()
+
     fun getCurrentCharacterOfUser(telegramId: String): Character? =
         mongoTemplate.findOne(
             Query.query(Criteria.where("telegramId").`is`(telegramId)),

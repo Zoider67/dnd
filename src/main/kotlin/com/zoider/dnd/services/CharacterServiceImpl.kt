@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class CharacterServiceImpl(
-    val tgUserRepository: TgUserRepository,
-    val characterRepository: CharacterRepository
+    private val tgUserRepository: TgUserRepository,
+    private val characterRepository: CharacterRepository
 ) : CharacterService {
 
     override fun createCharacter(userTgId: String, characterDto: CharacterDto): Character {
@@ -30,10 +30,19 @@ class CharacterServiceImpl(
         return characterRepository.getCharactersByUserTgId(userTgId)
     }
 
-    override fun setCurrentCharacter(userTgId: String, characterId: String): Boolean {
-        return characterRepository.setCurrentCharacterForUser(
+    override fun setCurrentCharacterByName(userTgId: String, characterName: String): Character? {
+        val character = characterRepository.getCharacterByName(characterName) ?: return null
+        val acknowledged = characterRepository.setCurrentCharacterForUser(
             telegramId = userTgId,
-            characterId = characterId
+            characterId = character.id.toString()
         )
+        if(!acknowledged) {
+            throw CommonDndBotException("Ошибка выбора персонажа")
+        }
+        return character
+    }
+
+    override fun getCurrentCharacter(userTgId: String): Character? {
+        return characterRepository.getCurrentCharacterOfUser(telegramId = userTgId)
     }
 }

@@ -1,6 +1,5 @@
 package com.zoider.dnd.bot.handlers.character
 
-import com.zoider.dnd.bot.PollingTgBot
 import com.zoider.dnd.bot.handlers.base.ICommandHandler
 import com.zoider.dnd.services.CharacterServiceImpl
 import com.zoider.dnd.utils.getSenderId
@@ -10,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.bots.AbsSender
 
 @Component
-class CharactersListCommandHandler(
+class CharactersListHandler(
     private val characterServiceImpl: CharacterServiceImpl
 ) : ICommandHandler {
     override fun getFilter() = "/characters"

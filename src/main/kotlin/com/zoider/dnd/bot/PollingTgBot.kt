@@ -95,7 +95,7 @@ class PollingTgBot(
         }
 
         val handler = handlers.filterIsInstance<ITextHandler>()
-            .find { it.getFilter() == update.message.text } ?: return false
+            .find { it.getFilter().toRegex().matches(update.message.text) } ?: return false
         handler.execute(this, update)
         return true
     }

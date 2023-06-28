@@ -10,5 +10,7 @@ interface CharacterService {
 
     fun getCharacterList(userTgId: String): List<Character>?
 
-    fun setCurrentCharacter(userTgId: String ,characterId: String): Boolean
+    fun setCurrentCharacterByName(userTgId: String, characterId: String): Character?
+
+    fun getCurrentCharacter(userTgId: String): Character?
 }
